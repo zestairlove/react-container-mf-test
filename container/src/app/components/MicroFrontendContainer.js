@@ -1,43 +1,41 @@
-import ReactDOM from 'react-dom';
 import { useEffect } from 'react';
 
-const MicroFrontendContainer = ({ host, renderMethodName, targetId }) => {
+const MicroFrontendReact = ({ host, methodName, targetId }) => {
   useEffect(() => {
     const scriptId = `${targetId}-script`;
 
-    const renderMicroFrontend = () => {
-      window[renderMethodName](targetId);
+    const mount = () => {
+      window[`mount${methodName}`](targetId);
     };
 
-    const cleanUp = () => {
-      const target = document.getElementById(targetId);
-      if (target) {
-        ReactDOM.unmountComponentAtNode(target);
-      }
+    const cleanup = () => {
+      window[`unmount${methodName}`](targetId);
     };
 
     if (document && document.getElementById(scriptId)) {
-      renderMicroFrontend();
-      return cleanUp;
+      mount();
+      return cleanup;
     }
 
     fetch(`${host}/asset-manifest.json`)
       .then(res => res.json())
       .then(manifest => {
+        console.log('manifest', manifest);
         const script = document.createElement('script');
         script.id = scriptId;
         script.crossOrigin = '';
         script.src = `${host}${manifest.files['main.js']}`;
         script.onload = () => {
-          renderMicroFrontend();
+          mount();
         };
         document.head.appendChild(script);
       });
 
-    return cleanUp;
-  }, [host, renderMethodName, targetId]);
+    return cleanup;
+  }, [host, methodName, targetId]);
 
-  return <main id={targetId} />;
+  // key 값을 넣는다.
+  return <main key={targetId} id={targetId} />;
 };
 
-export default MicroFrontendContainer;
+export default MicroFrontendReact;

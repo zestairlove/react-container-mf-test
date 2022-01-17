@@ -1,7 +1,7 @@
 import { Routes, Route, NavLink } from 'react-router-dom';
 
 import NotMicroPage from './app/components/NotMicro';
-import MicroFrontendContainer from './app/components/MicroFrontendContainer';
+import MicroFrontendReact from './app/components/MicroFrontendContainer';
 
 function App() {
   return (
@@ -17,6 +17,9 @@ function App() {
           <li>
             <NavLink to="micro-react">MicroReact</NavLink>
           </li>
+          <li>
+            <NavLink to="micro-vue">MicroVue</NavLink>
+          </li>
         </ul>
       </header>
       <Routes>
@@ -25,10 +28,20 @@ function App() {
         <Route
           path="micro-react"
           element={
-            <MicroFrontendContainer
+            <MicroFrontendReact
               host="http://localhost:3001"
-              renderMethodName="renderMicroReact"
+              methodName="MicroReact"
               targetId="MicroReact"
+            />
+          }
+        />
+        <Route
+          path="micro-vue"
+          element={
+            <MicroFrontendReact
+              host="http://localhost:3002"
+              methodName="MicroVue"
+              targetId="MicroVue"
             />
           }
         />
